@@ -24,7 +24,7 @@ spec:
         version: "current"
     spec:
       containers:
-      - image: killuazhu/deployment-lab:v2
+      - image: killuazhu/deployment-lab:v1
         livenessProbe:
           httpGet:
             path: /health
