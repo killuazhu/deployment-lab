@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: "deployment-lab"
+  name: "deployment-lab-dp-v1"
+spec:
+  replicas: 3
+  selector: 
+    matchLabels:
+      app: "deployment-lab"
+      version: "v1"
+  minReadySeconds: 5
+  progressDeadlineSeconds: 600
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: "deployment-lab"
+        version: "v1"
+    spec:
+      containers:
+      - image: killuazhu/deployment-lab:v1
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8090
+            scheme: HTTP
+          initialDelaySeconds: 1
+          periodSeconds: 1
+        name: deployment-lab
+        ports:
+        - containerPort: 8090
+          protocol: TCP
+        # resources:
+        #   requests:
+        #     cpu: "100m"
+        #     memory: "100m"
+        #   limits:
+        #     cpu: "500m"
+        #     memory: "500m"
+            

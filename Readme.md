@@ -75,3 +75,38 @@ while true; curl 169.57.112.152:30661; sleep 1; end
 ```shell
 kubectl apply -f kube/bluegreen
 ```
+
+## Canary Deployment
+
+We have `v1` of app running, we'd like to canary deploy a new version of `v3`
+
+```shell
+# deploy v1 app
+kubectl apply -f kube/canary/deployment.v1.yaml
+# deploy service
+kubectl apply -f kube/canary/service.yaml
+
+# Now you should see all web response are from v1
+# The IP address and port needs to be updated based on actual service
+while true; curl 169.57.112.152:30661; sleep 1; end
+# deployment-lab-dp-green-5cc64d976f-hdd9b: hello v1
+# deployment-lab-dp-green-5cc64d976f-89pnh: hello v1
+
+# deploy canary app v3
+kubectl apply -f kube/canary/deployment.v3.yaml
+
+# at this stage, wait for v3 app to finish deploying
+kubectl get pods
+
+# Now we should see traffic alternating between v1 and v3. Although v3 should have a much smaller hit ratio
+# The IP address and port needs to be updated based on actual service
+while true; curl 169.57.112.152:30661; sleep 1; end
+# deployment-lab-dp-green-5cc64d976f-hdd9b: hello v1
+# deployment-lab-dp-green-5cc64d976f-89pnh: hello v3
+```
+
+### Cleanup
+
+```shell
+kubectl apply -f kube/canary
+```
