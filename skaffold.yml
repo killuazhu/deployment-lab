@@ -1,0 +1,10 @@
+apiVersion: skaffold/v2beta5
+kind: Config
+build:
+  tagPolicy:
+    gitCommit:
+      # replace this field with your own prefix
+      prefix: local-
+  artifacts:
+    - image: killuazhu/deployment-lab
+      context: .
