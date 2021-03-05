@@ -3,6 +3,18 @@
 - A working kubernetes instance
 - kubectl command line from local env
 
+### Obtain the node IP address
+
+Go to your kube cluster's UI, navigate to `Worker nodes` tab, then copy the public IP field for the worker node.
+
+### Obtain the node exposed port
+
+```bash
+# This needs to run after each time service is deployed.
+kubectl get service/deployment-lab -o jsonpath='{.spec.ports[0].nodePort}'
+```
+
+
 ## Rolling Deployment
 
 ```shell
