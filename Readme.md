@@ -49,7 +49,7 @@ while true; curl $NODE_IP:$NODE_PORT; sleep 1; end
 ### Cleanup
 
 ```shell
-kubectl apply -f kube/rolling
+kubectl delete -f kube/rolling
 ```
 
 ## Blue / Green Deployment
@@ -92,7 +92,7 @@ while true; curl $NODE_IP:$NODE_PORT; sleep 1; end
 ### Cleanup
 
 ```shell
-kubectl apply -f kube/bluegreen
+kubectl delete -f kube/bluegreen
 ```
 
 ## Canary Deployment
@@ -131,5 +131,5 @@ while true; curl $NODE_IP:$NODE_PORT; sleep 1; end
 ### Cleanup
 
 ```shell
-kubectl apply -f kube/canary
+kubectl delete -f kube/canary
 ```
