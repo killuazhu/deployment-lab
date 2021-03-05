@@ -3,12 +3,23 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 )
 
 const version = "v1"
 
+var hostname = ""
+
+func findHostname() {
+	name, err := os.Hostname()
+	if err != nil {
+		panic(err)
+	}
+	hostname = name
+}
+
 func hello(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "hello %v\n", version)
+	fmt.Fprintf(w, "%v: hello %v\n", hostname, version)
 }
 
 func health(w http.ResponseWriter, req *http.Request) {
@@ -16,7 +27,7 @@ func health(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-
+	findHostname()
 	http.HandleFunc("/health", health)
 	http.HandleFunc("/", hello)
 
