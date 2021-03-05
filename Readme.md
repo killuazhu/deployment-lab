@@ -11,21 +11,24 @@ Go to your kube cluster's UI, navigate to `Worker nodes` tab, then copy the publ
 
 ```bash
 # This needs to run after each time service is deployed.
-kubectl get service/deployment-lab -o jsonpath='{.spec.ports[0].nodePort}'
+export NODE_PORT=$(kubectl get service/deployment-lab -o jsonpath='{.spec.ports[0].nodePort}')
 ```
-
 
 ## Rolling Deployment
 
 ```shell
+# Export worker node IP.
+# Use the instruction in "Obtain the node IP address" to get your worker node IP
+export NODE_IP=1.1.1.1 # REPLACE ME
+
 # deploy v1 app
 kubectl apply -f kube/rolling/deployment.v1.yaml
 # deploy the service
 kubectl apply -f kube/rolling/service.yaml
 
 # Now you should see all web response are from v1
-# The IP address and port needs to be updated based on actual service
-while true; curl 169.57.112.152:30661; sleep 1; end
+export NODE_PORT=$(kubectl get service/deployment-lab -o jsonpath='{.spec.ports[0].nodePort}')
+while true; curl $NODE_IP:$NODE_PORT; sleep 1; end
 # deployment-lab-dp-green-5cc64d976f-hdd9b: hello v1
 # deployment-lab-dp-green-5cc64d976f-89pnh: hello v1
 
@@ -37,8 +40,8 @@ kubectl get pods
 
 # Now you should see some web response are from v1 while others are from v2
 # Once all deployments are done, all traffic should be from v2
-# The IP address and port needs to be updated based on actual service
-while true; curl 169.57.112.152:30661; sleep 1; end
+export NODE_PORT=$(kubectl get service/deployment-lab -o jsonpath='{.spec.ports[0].nodePort}')
+while true; curl $NODE_IP:$NODE_PORT; sleep 1; end
 # deployment-lab-dp-green-5cc64d976f-hdd9b: hello v1
 # deployment-lab-dp-green-5cc64d976f-89pnh: hello v2
 ```
@@ -54,14 +57,18 @@ kubectl apply -f kube/rolling
 Switch from `blue` version to `green` version
 
 ```shell
+# Export worker node IP.
+# Use the instruction in "Obtain the node IP address" to get your worker node IP
+export NODE_IP=1.1.1.1 # REPLACE ME
+
 # deploy blue app
 kubectl apply -f kube/bluegreen/deployment.blue.yaml
 # deploy blue service
 kubectl apply -f kube/bluegreen/service.blue.yaml
 
 # Now you should see all web response are from blue
-# The IP address and port needs to be updated based on actual service
-while true; curl 169.57.112.152:30661; sleep 1; end
+export NODE_PORT=$(kubectl get service/deployment-lab -o jsonpath='{.spec.ports[0].nodePort}')
+while true; curl $NODE_IP:$NODE_PORT; sleep 1; end
 # deployment-lab-dp-green-5cc64d976f-hdd9b: hello blue
 # deployment-lab-dp-green-5cc64d976f-89pnh: hello blue
 
@@ -76,8 +83,8 @@ kubectl get pods
 kubectl apply -f kube/bluegreen/service.green.yaml
 
 # Now you should see all web response are from green now
-# The IP address and port needs to be updated based on actual service
-while true; curl 169.57.112.152:30661; sleep 1; end
+export NODE_PORT=$(kubectl get service/deployment-lab -o jsonpath='{.spec.ports[0].nodePort}')
+while true; curl $NODE_IP:$NODE_PORT; sleep 1; end
 # deployment-lab-dp-green-5cc64d976f-hdd9b: hello green
 # deployment-lab-dp-green-5cc64d976f-89pnh: hello green
 ```
@@ -93,14 +100,18 @@ kubectl apply -f kube/bluegreen
 We have `v1` of app running, we'd like to canary deploy a new version of `v3`
 
 ```shell
+# Export worker node IP.
+# Use the instruction in "Obtain the node IP address" to get your worker node IP
+export NODE_IP=1.1.1.1 # REPLACE ME
+
 # deploy v1 app
 kubectl apply -f kube/canary/deployment.v1.yaml
 # deploy service
 kubectl apply -f kube/canary/service.yaml
 
 # Now you should see all web response are from v1
-# The IP address and port needs to be updated based on actual service
-while true; curl 169.57.112.152:30661; sleep 1; end
+export NODE_PORT=$(kubectl get service/deployment-lab -o jsonpath='{.spec.ports[0].nodePort}')
+while true; curl $NODE_IP:$NODE_PORT; sleep 1; end
 # deployment-lab-dp-green-5cc64d976f-hdd9b: hello v1
 # deployment-lab-dp-green-5cc64d976f-89pnh: hello v1
 
@@ -111,8 +122,8 @@ kubectl apply -f kube/canary/deployment.v3.yaml
 kubectl get pods
 
 # Now we should see traffic alternating between v1 and v3. Although v3 should have a much smaller hit ratio
-# The IP address and port needs to be updated based on actual service
-while true; curl 169.57.112.152:30661; sleep 1; end
+export NODE_PORT=$(kubectl get service/deployment-lab -o jsonpath='{.spec.ports[0].nodePort}')
+while true; curl $NODE_IP:$NODE_PORT; sleep 1; end
 # deployment-lab-dp-green-5cc64d976f-hdd9b: hello v1
 # deployment-lab-dp-green-5cc64d976f-89pnh: hello v3
 ```
